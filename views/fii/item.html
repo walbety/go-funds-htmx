@@ -1,0 +1,12 @@
+{{define "fii/item"}}
+<div id="fii-item">
+    {{ range . }}
+    <div>
+        Ticker: <span>{{ .Ticker }}</span>
+        Rendimento: <span>{{ .Rendimento }}</span>
+        Yield: <span>{{ .Yield }}</span>
+        Data: <span>{{ .Data }}</span>
+    </div>
+    {{end}}
+</div>
+{{end}}

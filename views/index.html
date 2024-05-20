@@ -1,0 +1,184 @@
+{{block "index" . }}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <script
+      src="http://localhost:9001/views/static/chartCustom.js"
+      crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Alpine.js -->
+    <script defer
+      src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.13.8/dist/cdn.min.js"></script>
+    <script defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.8/dist/cdn.min.js"></script>
+
+    <script src="https://unpkg.com/htmx.org@1.9.11"
+      integrity="sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0"
+      crossorigin="anonymous"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <title>FIIs Central</title>
+  </head>
+  <body x-data="{scoped: $persist({fiis:[]})}"
+    x-init="initAll()">
+
+    <div class="container">
+
+    </div>
+    <div class="flex">
+      {{ template "sidebar" . }}
+
+    </div>
+
+    <div class="p-4 sm:ml-64">
+      <div
+        class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 w-['100%']">
+        <div class="container">
+
+          <div class="col-6">
+            <h1 class="mb-4">Search FII</h1>
+            <form hx-post="/fii/load"
+              hx-target="#fii-list-body"
+              hx-swap="beforeend">
+
+              <div class="mb-2">
+                <label>FII name</label>
+                <input type="text" name="fii-name" class="form-control">
+              </div>
+
+              <input type="submit" value="Search" class="btn btn-primary">
+
+            </form>
+            <button class="btn btn-primary"
+              @click="clearcontent('fii-item')">Clear</button>
+
+            <div class="col-6">
+              <h1 class="mb-4">Search FII table</h1>
+              <form hx-post="/fii/load-tr"
+                hx-target="#fii-table-body"
+                hx-swap="beforeend">
+
+                <div class="mb-2">
+                  <label>FII name</label>
+                  <input type="text" name="fii-name" class="form-control">
+                </div>
+
+                <input type="submit" value="submit" class="btn btn-primary">
+              </form>
+            </div>
+            <div class="col-6">
+              <h1 class="mb-4">Fiis</h1>
+              <table class="table">
+                <thead>
+                  <th>Data</th>
+                  <th>Ticker</th>
+                  <th>Rendimento</th>
+                  <th>Yield</th>
+                </thead>
+
+                <!-- id used created to be used in htmx -->
+                <tbody id="fii-table-body">
+                  <template>
+                    <tr></tr>
+
+                  </template>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- <div x-data="{ search: '' }" x-init="search = $store.arrayTest.getItems()">
+      <input type="text" x-model="search">
+
+      Searching for: <span x-text="search"></span>
+    </div> -->
+          <br>
+          <div class="container">
+            <h1>exemplo de add fii no alpine.store</h1>
+            <div x-data x-text="$store.arrayTest.items">...</div>
+            <div x-data="{ newFii: '' }">
+              <input type="text" x-model="newFii">
+              <button @click="$store.arrayTest.addFII(newFii)">Add FII to
+                Store</button>
+            </div>
+            <br>
+            <h1>exemplo de add fii no alpine.persist</h1>
+            <div x-data x-text="scoped.fiis">...</div>
+            <div x-data="{ newFii: '' }">
+              <input type="text" x-model="newFii" class="form-control"><br>
+              <div class="flex gap-2">
+
+                <button @click="addFiiToScope(scoped.fiis, newFii), newFii = ''"
+                  class="btn btn-primary mb-3">
+                  Add FII to Persist func</button><br>
+                <button
+                  @click="scoped.fiis.splice(scoped.fiis.indexOf(newFii),1), newFii = ''"
+                  class="btn btn-primary mb-3">
+                  Remove FII to Persist</button><br>
+              </div>
+              <button @click="scoped.fiis = []" class="btn btn-primary mb-3">
+                Clear Persist</button><br>
+            </div>
+            <br>
+            <br>
+            <div>
+              <h1>tabela de fiis com x-for</h1>
+              <table class="table">
+                <thead>
+                  <th>id</th>
+                  <th>fiiname</th>
+                  <th>remove</th>
+                </thead>
+
+                <!-- id used created to be used in htmx -->
+                <tbody>
+                  <template x-for="(fii, index) in scoped.fiis">
+                    <tr>
+                      <td x-text="index"><span>aa</span> </td>
+                      <td x-text="fii"> </td>
+                      <td @click="removeFiiFromScope(scoped.fiis, index)">X</td>
+                    </tr>
+
+                  </template>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <br>
+          <br>
+
+          <h1>exemplo de store</h1>
+          <!-- <div id="greeting" class="inner"
+      x-data="{$store.integer}">
+      <button class="button bouncy" @click="$store.integer += 1"
+        x-text="$store.integer + ' is the number'"></button>
+    </div> -->
+          <div id="greeting" class="inner"
+            x-data="{integer: $store.integer}">
+            <button class="button bouncy" @click="integer += 1"
+              x-text="integer + ' is the number'"></button>
+          </div>
+
+          <br>
+          <h1>exemplo de persist</h1>
+
+          <div x-data="{ count: $persist(0) }">
+            <button @click="count++">Increment</button>
+
+            <span x-text="count"></span>
+          </div>
+
+          {{ template "canvas" . }}
+        </div>
+      </div>
+    </div>
+    {{ template "bodysample" . }}
+  </body>
+</html>
+{{end}}

@@ -1,0 +1,10 @@
+{{define "fii/tr"}}
+{{ range . }}
+<tr>
+    <td>{{ .Ticker }}</td>
+    <td>{{ .Data }}</td>
+    <td>{{ .Rendimento }}</td>
+    <td>{{ .Yield }}</td>
+</tr>
+{{end}}
+{{end}}

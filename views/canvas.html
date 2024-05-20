@@ -1,0 +1,5 @@
+{{ define "canvas" }}
+<canvas id="myFiiChart" style="width:100%;max-width:700px"
+    x-data="{fiiValues: getFiisChartData(), date: getDateArray}"
+    x-init="initFiiChart(fiiValues,date)"></canvas>
+{{end}}
